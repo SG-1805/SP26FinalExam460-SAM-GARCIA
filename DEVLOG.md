@@ -28,8 +28,10 @@ I implemented the recursive search for Part 5 using backtracking. The search sta
 One issue I ran into was accidentally modifying the same collection of relics across recursive calls without restoring it correctly afterward. This caused missing relics and incorrect search paths until I added the proper backtracking step with remove/add and append/pop operations. After fixing that, the recursive exploration started producing the expected route orders. I have not implemented any pruning logic yet. I am tired right now and ive been working on this for too long today. I will do that tommorow. 
 
 ---
+## Entry 4 – [May14]: parts 5 and 6!
+So today is the day I realized that I needed to actually do git commits every time i worked on this project. oops. well i hope that my devlogs are enough but anyway I did the pruning and the pipeline implementation today both of which took an embrassing amount of time to implement. It was not very many lines of code however I kept runnong into issues that kept crashing python however most of themwere silly typos(like forgetting nodes), indentation issues, or snytactical problems. However it is complete and passes all the tests. I have one more thing i would like to adress but that will be in the next devlog. 
 
-## Entry 4 – [Date]: Post-Implementation Reflection
+## Entry 5 – [Date]: Post-Implementation Reflection
 
 > Required. Written after your implementation is complete. Describe what you would
 > change or improve given more time.

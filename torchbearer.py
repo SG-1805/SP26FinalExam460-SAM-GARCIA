@@ -128,6 +128,8 @@ def find_optimal_route(dist_table, spawn, relics, exit_node):
 
 def _explore( dist_table, current_loc, relics_remaining, relics_visited_order,
              cost_so_far, exit_node, best):
+    if cost_so_far >= best[0]:
+        return
     if not relics_remaining:
         exit_cost = dist_table[current_loc][exit_node]
         total_cost = cost_so_far + exit_cost
@@ -151,23 +153,8 @@ def _explore( dist_table, current_loc, relics_remaining, relics_visited_order,
 # =============================================================================
 
 def solve(graph, spawn, relics, exit_node):
-    """
-    Parameters
-    ----------
-    graph : dict[node, list[tuple[node, int]]]
-    spawn : node
-    relics : list[node]
-    exit_node : node
-
-    Returns
-    -------
-    tuple[float, list[node]]
-        (minimum_fuel_cost, ordered_relic_list)
-        Returns (float('inf'), []) if no valid route exists.
-
-    TODO
-    """
-    pass
+    dist_table = precompute_distances (graph, spawn, relics, exit_node)
+    return find_optimal_route(dist_table, spawn, relics, exit_node)
 
 
 # =============================================================================
@@ -246,4 +233,4 @@ def _test_part2():
     print(precompute_distances(graph, 'S', ['A', 'B'], 'T'))
 
 if __name__ == "__main__":
-    _test_part2()
+    _run_tests()

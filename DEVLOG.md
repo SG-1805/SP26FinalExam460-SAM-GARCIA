@@ -3,11 +3,6 @@
 **Student Name:** Samuel Garcia
 **Student ID:** 130737019
 
-> Instructions: Write at least four dated entries. Required entry types are marked below.
-> Two to five sentences per entry is sufficient. Write entries as you go, not all in one
-> sitting. Graders check that entries reflect genuine work across multiple sessions.
-> Delete all blockquotes before submitting.
-
 ---
 
 ## Entry 1 – [May12]: Initial Plan
@@ -29,20 +24,14 @@ One issue I ran into was accidentally modifying the same collection of relics ac
 
 ---
 ## Entry 4 – [May14]: parts 5 and 6!
-So today is the day I realized that I needed to actually do git commits every time i worked on this project. oops. well i hope that my devlogs are enough but anyway I did the pruning and the pipeline implementation today both of which took an embrassing amount of time to implement. It was not very many lines of code however I kept runnong into issues that kept crashing python however most of themwere silly typos(like forgetting nodes), indentation issues, or snytactical problems. However it is complete and passes all the tests. I have one more thing i would like to adress but that will be in the next devlog. 
+So today is the day I realized that I needed to actually do git commits every time i worked on this project. oops. well i hope that my devlogs are enough but anyway I did the pruning and the pipeline implementation today both of which took an embrassing amount of time to implement. It was not very many lines of code however I kept runnong into issues that kept crashing python however most of themwere silly typos(like forgetting nodes), indentation issues, or snytactical problems. However it is complete and passes all the provided tests. I have one more thing i would like to adress but that will be in the next devlog. 
 
-## Entry 5 – [Date]: Post-Implementation Reflection
+## Entry 5 – [Date]: Post-Implementation Reflection + p7
 
-> Required. Written after your implementation is complete. Describe what you would
-> change or improve given more time.
-
-_Your entry here._
-
+Last entry so I decided to make some additional edge case test cases since I saw on the document that there would be other test cases. Just testing some edge cases to see if my proggram could handle them. It could not. Out of the 5 edge test cases written my program failed three of them. This is when I came to the realization that my code was kind of crummy. So before submitting a final version I of course have to make a little more robust. So scanning my code for the problem it eas actually quite a simple fix. The test cases that failed where the case where the route included the exit node, the case where the recursive search involved modifying the same set of remaining relics while iterating through it, and the case where there were no relics. After trying a few solutions my problem was that I has the line of code: best[1] = relics_visited_order + [exit_node], which bassically returned the relic order plus T, but i dont want that I want the order toi include only relics not the exit, I rewalced that line with best[1] = relics_visited_order.copy(). I also realized i forgot to do the readme for the last one so i just went ahead and did those. After finishing the implementation, the main thing I would improve with more time would be the pruning and optimization logic. Right now the recursive search works correctly, but in the worst case it still explores many unnecessary branches before finding the best route. I would like to implement a stronger lower bound estimate so the algorithm could eliminate bad paths earlier and run more efficiently on larger graphs. I would also improve the testing setup by adding more randomized and edge case heavy graphs. Some of the most useful bugs I found came from unusual recursive cases, especially involving backtracking and modifying collections during recursion. Finsihed by reviewing the document making changes to part 4, getting rid of some typos that I found, and making some final tweaks to the code.
 ---
 
-## Final Entry – [Date]: Time Estimate
-
-> Required. Estimate minutes spent per part. Honesty is expected; accuracy is not graded.
+## Final Entry – [May14]: Time Estimate
 
 | Part | Estimated Hours |
 |---|---|
@@ -51,7 +40,7 @@ _Your entry here._
 | Part 3: Algorithm Correctness | .5 to 1 hour|
 | Part 4: Search Design | .5 to 1 hour|
 | Part 5: State and Search Space |4 - 5 hours |
-| Part 6: Pruning | |
-| Part 7: Implementation | |
-| README and DEVLOG writing | |
-| **Total** | |
+| Part 6: Pruning |1 hour |
+| Part 7: Implementation |2-3 hours (including new tests) |
+| README and DEVLOG writing |3-3.5 hours|
+| **Total** |12.5 - 16.5 hours give or take|

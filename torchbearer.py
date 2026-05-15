@@ -2,7 +2,7 @@
 CS 460 – Algorithms: Final Programming Assignment
 The Torchbearer
 
-Student Name: Samuel Garica
+Student Name: Samuel Garcia
 Student ID:  130737019
 
 INSTRUCTIONS
@@ -103,11 +103,11 @@ def dijkstra_invariant_check():
 def explain_search():
     return """
     - **The failure mode:** A greedy approach always picks the nearest next relic, but this can lead to a higher total cost overall.
-    - **Counter-example setup:** In the example, S can reach B with cost 1 and C with cost 2, but the later relic-to-relic costs make the full route matter more than the first step.
+    - **Counter-example setup:** In the example, S can reach B with cost 1 and A with cost 2, Traveling from B to A costs 100, while travleling fromA to B only costs 1.
     - **What greedy picks:** Greedy picks B first because B is the cheapest immediate relic from S.
-    - **What optimal picks:** The optimal route is S -> B -> D -> C -> T with total cost 4 in the provided example.
-    - **Why greedy loses:** Greedy loses because choosing the cheapest next relic does not account for the future cost of reaching the remaining relics.
-    - **What the algorithm must explore:** The algorithm must explore different orders of visiting the relics to determine which order gives the lowest total fuel cost.
+    - **What optimal picks:** The optimal route is S -> A -> B -> T with total cost 4 in the provided example.
+    - **Why greedy loses:** Greedy loses because choosing the cheapest next relic does not account for the future cost of reaching the remaining relics. For example route S -> B -> A -> T is very expensive since going from A to B is expensive, so the local cheapest produces a worse route.
+    - ** What the Algorithm Must Explore:** The algorithm must explore different orders of visiting the relics to determine which order gives the lowest total fuel cost.
     """
 
 
@@ -128,6 +128,7 @@ def find_optimal_route(dist_table, spawn, relics, exit_node):
 
 def _explore( dist_table, current_loc, relics_remaining, relics_visited_order,
              cost_so_far, exit_node, best):
+    # Safe to prune since nonnegative edge weights mean this path can only get more expensive.
     if cost_so_far >= best[0]:
         return
     if not relics_remaining:
@@ -135,10 +136,10 @@ def _explore( dist_table, current_loc, relics_remaining, relics_visited_order,
         total_cost = cost_so_far + exit_cost
         if total_cost < best[0]:
             best[0] = total_cost
-            best[1] = relics_visited_order + [exit_node]
+            best[1] = relics_visited_order.copy()
         return
     
-    for relic in relics_remaining:
+    for relic in list(relics_remaining):
         travel_cost = dist_table[current_loc][relic]
         if travel_cost == float('inf'):
             continue
@@ -231,6 +232,64 @@ def _test_part2():
     print(select_sources('S', ['A', 'B'], 'T'))
     print(run_dijkstra(graph, 'S'))
     print(precompute_distances(graph, 'S', ['A', 'B'], 'T'))
+def _edge_cases_test():
+    #edge case 1: returned route should have only relics, no exit
+    graph_1 = {
+        'S': [('R', 1)],
+        'R': [('T', 1)],
+        'T': []
+    }
+    cost, order = solve(graph_1, 'S', ['R'], 'T')
+    if cost != 2: print(f"Edge case 1 FAILED: expected 2 got {cost}")
+    elif order != ['R']:print(f"Edge Case 1 FAILED: expected ['R'], got {order}")
+    else : print("Edge Case 1 passed")
+    #edge case 2: Recursive exploration with multiple relics, tests mutation during iteration issues
+    graph_2 = {
+        'S': [('A', 1), ('B', 1), ('C', 1)],
+        'A': [('B', 1), ('C', 1), ('T', 10)],
+        'B': [('A', 1), ('C', 1), ('T', 10)],
+        'C': [('A', 1), ('B', 1), ('T', 1)],
+        'T': []
+    }
+    cost, order = solve(graph_2, 'S', ['A', 'B', 'C'], 'T')
+    if cost != 4: print(f"Edge case 2 FAILED: expected 4 got {cost}")
+    elif set(order) != {'A', 'B', 'C'}:print(f"Edge Case 2 FAILED: incorrect relic order, got {order}")
+    else : print("Edge Case 2 passed")
+    #edge case 3: Relic unreachable from spawn
+    graph_3= {
+        'S': [('A',1)],
+        'A': [('T',1)],
+        'R': [('T',1)],
+        'T': []
+    }
+    cost, order = solve(graph_3,'S', ['R'], 'T')
+    if cost != float('inf'):print(f"Edge case 3 FAILED: Expected inf, got{cost}")
+    elif order !=[]:print(f"Edge case 3 FAILED: Expected [], got {order}")
+    else: print("Edge case 3 passed")
+    #edge case 4: Greedy first choice is not optimal.
+    graph_4 = {
+        'S': [('A', 1), ('B', 2)],
+        'A': [('B', 100), ('T', 100)],
+        'B': [('A', 1), ('T', 1)],
+        'T': []
+    }
+    cost, order = solve(graph_4, 'S', ['A', 'B'], 'T')
+    cost_ab = 1 + 100 + 1 
+    cost_ba = 2 + 1 + 100 
+    expected_cost = min(cost_ab, cost_ba)
+    if cost != expected_cost: print(f"Edge case 4 FAILED: Expected cost 4, got {cost}")
+    elif order != ['A', 'B']: print(f"Edge case 4 FAILED: Expected ['B', 'A'], got {order}")
+    else : print("Edge Case 4 passed")
+    #Edge case 5: no relics: go from spawn to exit
+    graph_5 = {
+        'S': [('T', 7)],
+        'T': []
+    }
+    cost, order = solve(graph_5,'S',[], 'T')
+    if cost != 7: print(f"Edge case 5 FAILED: Expected cost 7, got {cost}")
+    elif order != []: print(f"Edge case 5 FAILED: Expected[], got {order}")
+    else :print("Edge Case 5 passed")
 
 if __name__ == "__main__":
     _run_tests()
+    _edge_cases_test()
